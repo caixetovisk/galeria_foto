@@ -33,6 +33,13 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Para usar essa função, tu precisas dar acesso à camera truta!!!",
+          "cameraPermission": "Para usar essa função, tu precisas dar acesso à camera truta!!!"
+        }
       ]
     ],
     "experiments": {
