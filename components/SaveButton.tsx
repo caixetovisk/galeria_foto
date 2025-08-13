@@ -2,7 +2,10 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-const SaveButton = ({onPress}) => {
+interface SaveType{
+  onPress: () => {}
+}
+const SaveButton = ({onPress} : SaveType) => {
   return (
       <TouchableOpacity style={style.button} onPress={onPress}>
             <Text style={style.text}>Salvar</Text>

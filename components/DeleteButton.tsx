@@ -1,30 +1,31 @@
+// DeleteButton.tsx
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 
-interface AddType {
+interface DeleteType{
   onPress: () => {}
 }
-const AddButton = ({onPress} : AddType) => {
+const DeleteButton = ({onPress} : DeleteType) => {
   return (
       <TouchableOpacity style={style.button} onPress={onPress}>
-            <Text style={style.text}>Add</Text>
+            <Text style={style.text}>Remover</Text>
      </TouchableOpacity>
   );
 }
 
 const style = StyleSheet.create({
     button: {
-        width: 60,
-        height: 60,
-        borderRadius:30,
+        width: 100,
+        height: 50,
+        borderRadius:10,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor:"#ff5500ff"
+        backgroundColor:"#e40fa4ff"
       },
     text:{
         color: "#ffffffff",
-        fontSize:30,        
+        fontSize:20,        
     }
 });
 
-export default AddButton;
+export default DeleteButton;
