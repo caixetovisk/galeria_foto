@@ -7,14 +7,15 @@ import { useEffect, useState } from 'react';
 import { Alert, Image, StyleSheet, Text, View } from "react-native";
 
 export default function Index() {
+  const STORAGE_NAME = 'galeria';
   const [image, setImage] = useState<string | null>(null);
   const [fileSize, setFileSize] = useState<Number | undefined>(undefined);
-  const [profile, setProfile] = useState<string | null>(null);
-  
+  const [listaFotos, setListaFotos] = useState<Array<string>>([]);
+
   const storeImage = async (value : string) => {
     try {
-      await AsyncStorage.setItem('profile', value);
-      setProfile(value);
+      setListaFotos([...listaFotos, value]);
+      await AsyncStorage.setItem(STORAGE_NAME, JSON.stringify(listaFotos));
       setImage(null);
       Alert.alert("Imagem Salva");
     } catch (error) {
@@ -24,24 +25,30 @@ export default function Index() {
 
   const getImage = async () => {
     try {
-      const value = await AsyncStorage.getItem('profile');
+      const value = await AsyncStorage.getItem(STORAGE_NAME);
       if (value !== null) {
-        setProfile(value);
+        setListaFotos(JSON.parse(value));
       }
     } catch (error) {
       console.error("Imagem não foi encontrada!!!!!!");
     }
   };
 
-  const removeImage = async () => {
+  const removeImage = async ( indice : number) => {
     try {
-      await AsyncStorage.removeItem('profile');
-      setProfile(null);
+      const lista = [...listaFotos];
+      lista.splice(indice, 1);
+      if(lista.length > 0){
+        await AsyncStorage.setItem(STORAGE_NAME, JSON.stringify(lista));
+        setListaFotos(lista);
+      }
+      if(lista.length === 0){
+        await AsyncStorage.removeItem(STORAGE_NAME);
+        setListaFotos([]);
+      }
     } catch (e) {
       console.error('Não foi possível excluir a Imagem');
     }
-
-    console.log('Done.')
   }
 
   const addFoto = async () => {
@@ -82,9 +89,19 @@ export default function Index() {
       {image && <Text>{convertBytesToHuman(fileSize)}</Text>}
       {image && <SaveButton onPress={() => storeImage(image)} />}
 
-      {profile && <Text>Aqui vai ter a listagem de fotos</Text>}
+      {listaFotos.length > 0 && <Text>Aqui vai ter a listagem de fotos</Text>}
+      {
+        listaFotos.length > 0 && listaFotos.map((foto, indice) => (
+        <View>
+            <Image source={{ uri: foto }} style={styles.image} />
+            <DeleteButton onPress={removeImage(indice)} />
+        </View>
+      ))
+      }
+
+      {/* {profile && <Text>Aqui vai ter a listagem de fotos</Text>}
       {profile && <Image source={{ uri: profile }} style={styles.image} />}
-      {profile && <DeleteButton onPress={removeImage} />}
+      {profile && <DeleteButton onPress={removeImage} />} */}
     </View>
   );
 }
