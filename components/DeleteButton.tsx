@@ -1,6 +1,7 @@
 // DeleteButton.tsx
+import { Fontisto } from "@react-native-vector-icons/fontisto";
 import React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 interface DeleteType{
   onPress: () => {}
@@ -8,15 +9,15 @@ interface DeleteType{
 const DeleteButton = ({onPress} : DeleteType) => {
   return (
       <TouchableOpacity style={style.button} onPress={onPress}>
-            <Text style={style.text}>Remove</Text>
+            <Fontisto style={style.text} name="trash"/>
      </TouchableOpacity>
   );
 }
 
 const style = StyleSheet.create({
     button: {
-        width: 80,
-        height: 50,
+        width: 40,
+        height: 40,
         borderRadius:35,
         justifyContent: "center",
         alignItems: "center",

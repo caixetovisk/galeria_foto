@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#282828',
   },
   image: {
-    width: 150,
+    width: 280,
     height: 150,
     padding: 3,
     marginRight: 5
