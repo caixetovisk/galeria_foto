@@ -4,7 +4,7 @@ import SaveButton from "@/components/SaveButton";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
-import { Alert, Image, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function Index() {
   const STORAGE_NAME = 'galeria';
@@ -14,8 +14,9 @@ export default function Index() {
 
   const storeImage = async (value : string) => {
     try {
-      setListaFotos([...listaFotos, value]);
-      await AsyncStorage.setItem(STORAGE_NAME, JSON.stringify(listaFotos));
+      const fotos =[...listaFotos, value];
+      setListaFotos(fotos);
+      await AsyncStorage.setItem(STORAGE_NAME,  JSON.stringify(fotos));
       setImage(null);
       Alert.alert("Imagem Salva");
     } catch (error) {
@@ -27,6 +28,7 @@ export default function Index() {
     try {
       const value = await AsyncStorage.getItem(STORAGE_NAME);
       if (value !== null) {
+        console.log(value);
         setListaFotos(JSON.parse(value));
       }
     } catch (error) {
@@ -90,18 +92,16 @@ export default function Index() {
       {image && <SaveButton onPress={() => storeImage(image)} />}
 
       {listaFotos.length > 0 && <Text>Aqui vai ter a listagem de fotos</Text>}
+      <ScrollView>
       {
         listaFotos.length > 0 && listaFotos.map((foto, indice) => (
-        <View>
+          <View id={`img-${indice}`}  key={indice}>
             <Image source={{ uri: foto }} style={styles.image} />
-            <DeleteButton onPress={removeImage(indice)} />
-        </View>
+            <DeleteButton onPress={() => removeImage(indice)} />
+          </View>
       ))
       }
-
-      {/* {profile && <Text>Aqui vai ter a listagem de fotos</Text>}
-      {profile && <Image source={{ uri: profile }} style={styles.image} />}
-      {profile && <DeleteButton onPress={removeImage} />} */}
+      </ScrollView>
     </View>
   );
 }
