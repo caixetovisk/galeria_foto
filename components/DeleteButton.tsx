@@ -8,16 +8,16 @@ interface DeleteType{
 const DeleteButton = ({onPress} : DeleteType) => {
   return (
       <TouchableOpacity style={style.button} onPress={onPress}>
-            <Text style={style.text}>Remover</Text>
+            <Text style={style.text}>Remove</Text>
      </TouchableOpacity>
   );
 }
 
 const style = StyleSheet.create({
     button: {
-        width: 100,
+        width: 80,
         height: 50,
-        borderRadius:10,
+        borderRadius:35,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor:"#e40fa4ff"

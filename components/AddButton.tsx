@@ -19,7 +19,7 @@ const style = StyleSheet.create({
         borderRadius:30,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor:"#ff5500ff"
+        backgroundColor:"#ff5500ff", 
       },
     text:{
         color: "#ffffffff",
