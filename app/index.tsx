@@ -1,6 +1,7 @@
 import AddButton from "@/components/AddButton";
 import DeleteButton from "@/components/DeleteButton";
 import SaveButton from "@/components/SaveButton";
+import { sendFileToSupabase } from "@/composeable/supabase";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
@@ -9,18 +10,29 @@ import { Alert, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 export default function Index() {
   const STORAGE_NAME = 'galeria';
   const [image, setImage] = useState<string | null>(null);
-  const [fileSize, setFileSize] = useState<Number | undefined>(undefined);
+  const [fileName, setFileName] = useState<string>('');
+  const [contentType, setContentType] = useState<string>('');
+  const [fileSize, setFileSize] = useState<Number>(0);
+  const [base64, setBase64] = useState<string>('');
   const [listaFotos, setListaFotos] = useState<Array<string>>([]);
 
-  const storeImage = async (value: string) => {
+  const storeImage = async (path: string, name: string, contentType: string, base64: string, fileSize:Number) => {
     try {
-      const fotos = [...listaFotos, value];
+      await sendFileToSupabase({
+         file : base64,
+         path : path,
+         name: name,
+         contentType: contentType,
+         fileSize: fileSize,
+        });
+
+      const fotos = [...listaFotos, path];
       setListaFotos(fotos);
       await AsyncStorage.setItem(STORAGE_NAME, JSON.stringify(fotos));
       setImage(null);
       Alert.alert("Imagem Salva");
     } catch (error) {
-      console.error("algo deu erro ao salvar a imagem!!!!!!");
+      console.error("algo deu erro ao salvar a imagem!!!!!!", error);
     }
   };
 
@@ -59,11 +71,15 @@ export default function Index() {
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
+      base64: true,
     });
-    console.log(result);
+
     if (!result.canceled) {
+      setFileName(result.assets[0]?.fileName ?? '');
       setImage(result.assets[0].uri);
-      setFileSize(result.assets[0]?.fileSize)
+      setFileSize(result.assets[0]?.fileSize ?? 0)
+      setBase64(result.assets[0]?.base64 ?? '')
+      setContentType(result.assets[0].mimeType ?? '')
     }
   }
 
@@ -89,7 +105,7 @@ export default function Index() {
       <AddButton onPress={addFoto}></AddButton>
       {image && <Image source={{ uri: image }} style={styles.image} />}
       {image && <Text>{convertBytesToHuman(fileSize)}</Text>}
-      {image && <SaveButton onPress={() => storeImage(image)} />}
+      {image && <SaveButton onPress={() => storeImage(image, fileName, contentType, base64, fileSize)} />}
 
       <ScrollView style={styles.scroolView}>
         {
